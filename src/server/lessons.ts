@@ -4,67 +4,108 @@ import { headers } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { asc, eq } from "drizzle-orm";
 import { db } from "@/db";
-import { lessons } from "@/db/schema";
+import { teksten, lessen } from "@/db/schema";
 import { auth } from "@/lib/auth";
 
-export type LessonInput = {
-  title: string;
-  slug: string;
-  group: string;
-  genre: string;
-  theme?: string;
-  imageUrl?: string;
-  textContent: string;
-  textAnalysisContent: string;
-  lessonContent: string;
-  isFree: boolean;
+export type TekstInput = {
+    title: string;
+    slug: string;
+    group: string;
+    genre: string;
+    theme?: string;
+    imageUrl?: string;
+    textContent: string;
+    textAnalysisContent: string;
+    isFree: boolean;
 };
 
-// TODO: replace with a real admin check once the beheeromgeving has roles beyond free/subscriber.
+export type LessonInput = {
+    tekstId: number;
+    title: string;
+    content: string;
+    order?: number;
+};
+
+// Only admins may create/update/delete teksten and lessen.
 async function requireAdmin() {
-  const session = await auth.api.getSession({ headers: await headers() });
-  if (!session) throw new Error("Not authenticated");
-  return session;
+    const session = await auth.api.getSession({ headers: await headers() });
+    if (!session) throw new Error("Not authenticated");
+    if (session.user.role !== "admin") throw new Error("Insufficient permissions");
+    return session;
 }
 
-export async function getAllLessons() {
-  return db.select().from(lessons).orderBy(asc(lessons.createdAt));
+export async function getAllTeksten() {
+    return db.select().from(teksten).orderBy(asc(teksten.createdAt));
 }
 
-export async function getFreeLessons(limit = 5) {
-  return db
-    .select()
-    .from(lessons)
-    .where(eq(lessons.isFree, true))
-    .orderBy(asc(lessons.createdAt))
-    .limit(limit);
+export async function getFreeTeksten(limit = 5) {
+    return db
+        .select()
+        .from(teksten)
+        .where(eq(teksten.isFree, true))
+        .orderBy(asc(teksten.createdAt))
+        .limit(limit);
 }
 
-export async function getLessonBySlug(slug: string) {
-  const [lesson] = await db.select().from(lessons).where(eq(lessons.slug, slug)).limit(1);
-  return lesson;
+export async function getTekstBySlug(slug: string) {
+    const [tekst] = await db.select().from(teksten).where(eq(teksten.slug, slug)).limit(1);
+    if (!tekst) return undefined;
+
+    const lessons = await db
+        .select()
+        .from(lessen)
+        .where(eq(lessen.tekstId, tekst.id))
+        .orderBy(asc(lessen.order), asc(lessen.createdAt));
+
+    return { ...tekst, lessons };
+}
+
+export async function createTekst(input: TekstInput) {
+    await requireAdmin();
+    const [created] = await db.insert(teksten).values(input).returning();
+    revalidatePath("/lessen");
+    return created;
+}
+
+export async function updateTekst(id: number, input: Partial<TekstInput>) {
+    await requireAdmin();
+    const [updated] = await db
+        .update(teksten)
+        .set(input)
+        .where(eq(teksten.id, id))
+        .returning();
+    revalidatePath("/lessen");
+    return updated;
+}
+
+export async function deleteTekst(id: number) {
+    await requireAdmin();
+    // Lessen for this tekst are removed automatically via the "on delete cascade" foreign key.
+    await db.delete(teksten).where(eq(teksten.id, id));
+    revalidatePath("/lessen");
 }
 
 export async function createLesson(input: LessonInput) {
-  await requireAdmin();
-  const [created] = await db.insert(lessons).values(input).returning();
-  revalidatePath("/lessen");
-  return created;
+    await requireAdmin();
+    const [created] = await db.insert(lessen).values(input).returning();
+    revalidatePath("/lessen");
+    return created;
 }
 
 export async function updateLesson(id: number, input: Partial<LessonInput>) {
-  await requireAdmin();
-  const [updated] = await db
-    .update(lessons)
-    .set(input)
-    .where(eq(lessons.id, id))
-    .returning();
-  revalidatePath("/lessen");
-  return updated;
+    await requireAdmin();
+    const [updated] = await db
+        .update(lessen)
+        .set(input)
+        .where(eq(lessen.id, id))
+        .returning();
+    revalidatePath("/lessen");
+    return updated;
 }
 
 export async function deleteLesson(id: number) {
-  await requireAdmin();
-  await db.delete(lessons).where(eq(lessons.id, id));
-  revalidatePath("/lessen");
+    await requireAdmin();
+    await db.delete(lessen).where(eq(lessen.id, id));
+    revalidatePath("/lessen");
 }
+

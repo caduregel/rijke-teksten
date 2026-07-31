@@ -10,7 +10,7 @@ export const user = pgTable("user", {
   emailVerified: boolean("email_verified").notNull().default(false),
   image: text("image"),
   // Only two roles for now: free visitors and paying subscribers.
-  role: text("role", { enum: ["free", "subscriber"] })
+  role: text("role", { enum: ["free", "subscriber", "admin"] })
     .notNull()
     .default("free"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
