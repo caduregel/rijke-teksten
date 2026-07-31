@@ -16,6 +16,9 @@ export const auth = betterAuth({
   },
   plugins: [
     magicLink({
+      // Default is 5 minutes, which is too short while there's no real email
+      // provider wired up and links are relayed manually from the Vercel logs.
+      expiresIn: 60 * 60,
       sendMagicLink: async ({ email, url }) => {
         await sendMagicLinkEmail(email, url);
       },

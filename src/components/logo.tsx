@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Sparkle } from "lucide-react";
+import Image from "next/image";
 import { cn } from "@/lib/utils";
 
 export function Logo({ className }: { className?: string }) {
@@ -7,14 +7,15 @@ export function Logo({ className }: { className?: string }) {
     <Link
       href="/"
       className={cn(
-        "flex items-center gap-2 font-heading text-lg font-semibold tracking-tight text-foreground",
-        className
+        "flex items-center gap-3 font-heading text-lg font-semibold tracking-tight text-foreground",
+        className,
       )}
     >
-      <span className="relative flex size-8 items-center justify-center rounded-xl bg-primary text-primary-foreground">
-        <Sparkle className="size-4" fill="currentColor" />
-      </span>
-      Rijke Teksten
+      <Image alt="logo" src="/LR.svg" width={30} height={30} />
+      <div>
+        <span>Lees </span>
+        <span className="text-primary">Routine</span>
+      </div>
     </Link>
   );
 }
