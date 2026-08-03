@@ -8,7 +8,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
-import { createTekst, createLesson, type TekstInput } from "@/server/lessons";
+import {
+  createTekst,
+  updateTekst,
+  createLesson,
+  updateLesson,
+  deleteLesson,
+  type TekstInput,
+} from "@/server/lessons";
 
 const emptyForm: TekstInput = {
   title: "",
@@ -22,7 +29,7 @@ const emptyForm: TekstInput = {
   isFree: false,
 };
 
-type LessonDraft = { title: string; content: string };
+type LessonDraft = { id?: number; title: string; content: string };
 
 const emptyLessonDraft: LessonDraft = { title: "", content: "" };
 
@@ -34,10 +41,27 @@ function slugify(value: string) {
     .replace(/(^-|-$)/g, "");
 }
 
-export function LessonForm() {
+type LessonFormProps = {
+  mode?: "create" | "edit";
+  tekstId?: number;
+  initialForm?: TekstInput;
+  initialLessons?: LessonDraft[];
+};
+
+export function LessonForm({
+  mode = "create",
+  tekstId,
+  initialForm,
+  initialLessons,
+}: LessonFormProps) {
   const router = useRouter();
-  const [form, setForm] = useState<TekstInput>(emptyForm);
-  const [lessonDrafts, setLessonDrafts] = useState<LessonDraft[]>([emptyLessonDraft]);
+  const [form, setForm] = useState<TekstInput>(initialForm ?? emptyForm);
+  const [lessonDrafts, setLessonDrafts] = useState<LessonDraft[]>(
+    initialLessons && initialLessons.length > 0 ? initialLessons : [emptyLessonDraft]
+  );
+  const [originalLessonIds] = useState<number[]>(
+    (initialLessons ?? []).flatMap((draft) => (draft.id ? [draft.id] : []))
+  );
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -59,17 +83,44 @@ export function LessonForm() {
         setSubmitting(true);
         setError(null);
         try {
-          const tekst = await createTekst({ ...form, slug: form.slug || slugify(form.title) });
           const drafts = lessonDrafts.filter(
             (draft) => draft.title.trim() || draft.content.trim()
           );
-          for (const [index, draft] of drafts.entries()) {
-            await createLesson({
-              tekstId: tekst.id,
-              title: draft.title || `Les ${index + 1}`,
-              content: draft.content,
-              order: index,
-            });
+
+          if (mode === "edit" && tekstId) {
+            await updateTekst(tekstId, { ...form, slug: form.slug || slugify(form.title) });
+
+            const keptIds = drafts.flatMap((draft) => (draft.id ? [draft.id] : []));
+            const removedIds = originalLessonIds.filter((id) => !keptIds.includes(id));
+            for (const id of removedIds) {
+              await deleteLesson(id);
+            }
+            for (const [index, draft] of drafts.entries()) {
+              if (draft.id) {
+                await updateLesson(draft.id, {
+                  title: draft.title || `Les ${index + 1}`,
+                  content: draft.content,
+                  order: index,
+                });
+              } else {
+                await createLesson({
+                  tekstId,
+                  title: draft.title || `Les ${index + 1}`,
+                  content: draft.content,
+                  order: index,
+                });
+              }
+            }
+          } else {
+            const tekst = await createTekst({ ...form, slug: form.slug || slugify(form.title) });
+            for (const [index, draft] of drafts.entries()) {
+              await createLesson({
+                tekstId: tekst.id,
+                title: draft.title || `Les ${index + 1}`,
+                content: draft.content,
+                order: index,
+              });
+            }
           }
           router.push("/beheer");
           router.refresh();
@@ -211,7 +262,11 @@ export function LessonForm() {
       {error && <p className="text-sm text-destructive">{error}</p>}
 
       <Button type="submit" disabled={submitting} className="self-start">
-        {submitting ? "Bezig met opslaan..." : "Tekst toevoegen"}
+        {submitting
+          ? "Bezig met opslaan..."
+          : mode === "edit"
+            ? "Wijzigingen opslaan"
+            : "Tekst toevoegen"}
       </Button>
     </form>
   );

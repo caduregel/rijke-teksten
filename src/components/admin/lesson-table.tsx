@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { Trash2 } from "lucide-react";
+import Link from "next/link";
+import { Pencil, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -16,6 +17,7 @@ import { deleteTekst } from "@/server/lessons";
 
 export type AdminLesson = {
   id: number;
+  slug: string;
   title: string;
   group: string;
   genre: string;
@@ -48,7 +50,11 @@ export function LessonTable({ lessons }: { lessons: AdminLesson[] }) {
       <TableBody>
         {items.map((lesson) => (
           <TableRow key={lesson.id}>
-            <TableCell className="font-medium">{lesson.title}</TableCell>
+            <TableCell className="font-medium">
+              <Link href={`/lessen/${lesson.slug}`} className="hover:underline">
+                {lesson.title}
+              </Link>
+            </TableCell>
             <TableCell>{lesson.group}</TableCell>
             <TableCell>{lesson.genre}</TableCell>
             <TableCell>
@@ -57,20 +63,30 @@ export function LessonTable({ lessons }: { lessons: AdminLesson[] }) {
               </Badge>
             </TableCell>
             <TableCell className="text-right">
-              <Button
-                variant="destructive"
-                size="sm"
-                disabled={isPending}
-                onClick={() =>
-                  startTransition(async () => {
-                    await deleteTekst(lesson.id);
-                    setItems((prev) => prev.filter((item) => item.id !== lesson.id));
-                  })
-                }
-              >
-                <Trash2 data-icon="inline-start" />
-                Verwijderen
-              </Button>
+              <div className="flex justify-end gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  render={<Link href={`/beheer/${lesson.id}/bewerken`} />}
+                >
+                  <Pencil data-icon="inline-start" />
+                  Bewerken
+                </Button>
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  disabled={isPending}
+                  onClick={() =>
+                    startTransition(async () => {
+                      await deleteTekst(lesson.id);
+                      setItems((prev) => prev.filter((item) => item.id !== lesson.id));
+                    })
+                  }
+                >
+                  <Trash2 data-icon="inline-start" />
+                  Verwijderen
+                </Button>
+              </div>
             </TableCell>
           </TableRow>
         ))}

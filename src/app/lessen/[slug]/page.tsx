@@ -1,5 +1,8 @@
 import { notFound } from "next/navigation";
+import Link from "next/link";
+import { Pencil } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { getTekstBySlug } from "@/server/lessons";
 import { getCurrentUser } from "@/lib/session";
 import { canAccessLesson } from "@/lib/access";
@@ -30,10 +33,22 @@ export default async function LessonPage({
 
   return (
     <section className="mx-auto max-w-5xl px-6 py-12">
-      <div className="mb-6 flex flex-wrap gap-1.5">
-        <Badge variant="secondary">{lesson.group}</Badge>
-        <Badge variant="secondary">{lesson.genre}</Badge>
-        {lesson.theme && <Badge variant="secondary">{lesson.theme}</Badge>}
+      <div className="mb-6 flex flex-wrap items-center justify-between gap-1.5">
+        <div className="flex flex-wrap gap-1.5">
+          <Badge variant="secondary">{lesson.group}</Badge>
+          <Badge variant="secondary">{lesson.genre}</Badge>
+          {lesson.theme && <Badge variant="secondary">{lesson.theme}</Badge>}
+        </div>
+        {user?.role === "admin" && (
+          <Button
+            variant="outline"
+            size="sm"
+            render={<Link href={`/beheer/${lesson.id}/bewerken`} />}
+          >
+            <Pencil data-icon="inline-start" />
+            Bewerken
+          </Button>
+        )}
       </div>
 
       <LessonViewer

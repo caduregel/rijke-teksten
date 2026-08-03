@@ -60,6 +60,19 @@ export async function getTekstBySlug(slug: string) {
     return { ...tekst, lessons };
 }
 
+export async function getTekstById(id: number) {
+    const [tekst] = await db.select().from(teksten).where(eq(teksten.id, id)).limit(1);
+    if (!tekst) return undefined;
+
+    const lessons = await db
+        .select()
+        .from(lessen)
+        .where(eq(lessen.tekstId, tekst.id))
+        .orderBy(asc(lessen.order), asc(lessen.createdAt));
+
+    return { ...tekst, lessons };
+}
+
 export async function createTekst(input: TekstInput) {
     await requireAdmin();
     const [created] = await db.insert(teksten).values(input).returning();
