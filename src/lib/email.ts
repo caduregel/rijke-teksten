@@ -52,6 +52,11 @@ function magicLinkEmailText(url: string) {
 }
 
 export async function sendMagicLinkEmail(email: string, url: string) {
+  if (process.env.ENVIRONMENT === "dev") {
+    console.log("In development environment, here is the magic link login: " + url)
+    return
+  }
+
   if (!resend) {
     throw new Error(`failed to send magic link, no resend instance: ${resend}`)
   }

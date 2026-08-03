@@ -4,5 +4,5 @@ export function canAccessLesson(
   user: { role?: string } | null | undefined
 ) {
   if (lesson.isFree) return true;
-  return user?.role === "subscriber";
+  return user?.role === "subscriber" || user?.role === "admin";
 }
