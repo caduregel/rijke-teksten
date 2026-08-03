@@ -5,6 +5,7 @@ const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KE
 // Falls back to console logging in dev, or if no API key is configured yet.
 export async function sendMagicLinkEmail(email: string, url: string) {
   if (!resend) {
+    console.log(process.env.RESEND_API_KEY)
     throw new Error(`failed to send magic link, no resend instance: ${resend}`)
   }
 
