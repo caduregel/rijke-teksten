@@ -18,7 +18,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Rijke Teksten",
+  title: "Lees Routine",
   description: "Rijke teksten en lessenseries volgens de 3V-leesroutine.",
 };
 
