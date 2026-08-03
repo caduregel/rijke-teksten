@@ -1,11 +1,22 @@
-// TODO: swap this out for a real email provider (Resend, Postmark, ...) before going live.
+import { Resend } from "resend";
+
+const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
+
+// Falls back to console logging in dev, or if no API key is configured yet.
 export async function sendMagicLinkEmail(email: string, url: string) {
-  console.log(`[dev] Magic link for ${email}: ${url}`);
-  return
-  if (process.env.NODE_ENV !== "production") {
-    console.log(`[dev] Magic link for ${email}: ${url}`);
-    return;
+  if (!resend) {
+    throw new Error(`failed to send magic link, no resend instance: ${resend}`)
   }
 
-  throw new Error("sendMagicLinkEmail has no production email provider configured yet");
+  const { error } = await resend.emails.send({
+    from: process.env.EMAIL_FROM ?? "Rijke Teksten <inlog@leesroutine.nl>",
+    to: email,
+    subject: "Je inloglink voor Rijke Teksten",
+    html: `<p>Klik op de onderstaande link om in te loggen:</p><p><a href="${url}">${url}</a></p><p>Deze link verloopt na 1 uur.</p> <br /> <p>Als die link niet werkt, kopieer hem dan hier: ${url}</p>`,
+  });
+
+  if (error) {
+    throw new Error(`Failed to send magic link email: ${error.message}`);
+  }
 }
+

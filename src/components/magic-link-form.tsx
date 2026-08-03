@@ -8,13 +8,19 @@ import { Label } from "@/components/ui/label";
 import { authClient } from "@/lib/auth-client";
 
 export function MagicLinkForm() {
-  const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
+  const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">(
+    "idle",
+  );
 
   if (status === "sent") {
     return (
-      <p className="rounded-lg border border-border bg-secondary/40 p-4 text-sm">
-        Check je inbox! We hebben een inloglink gestuurd.
-      </p>
+      <div className="rounded-lg border border-border bg-secondary/40 p-4 text-sm flex flex-col gap-2 text-center">
+        <p>Check je inbox! We hebben een inloglink gestuurd.</p>
+        <p className="text-xs text-muted-foreground">
+          Geen e-mail ontvangen? Controleer je spamfolder, of probeer het
+          opnieuw.
+        </p>
+      </div>
     );
   }
 
@@ -35,7 +41,13 @@ export function MagicLinkForm() {
     >
       <div className="flex flex-col gap-1.5">
         <Label htmlFor="email">E-mailadres</Label>
-        <Input id="email" name="email" type="email" placeholder="jij@school.nl" required />
+        <Input
+          id="email"
+          name="email"
+          type="email"
+          placeholder="jij@school.nl"
+          required
+        />
       </div>
       {status === "error" && (
         <p className="text-sm text-destructive">
