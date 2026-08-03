@@ -2,7 +2,7 @@ import { Resend } from "resend";
 
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 
-const siteUrl = "https://rijke-teksten.vercel.app";
+const siteUrl = process.env.NEXT_PUBLIC_BETTER_AUTH_URL ?? "https://rijke-teksten.vercel.app";
 const logoUrl = `${siteUrl}/LR.svg`;
 
 // Inline styles + table layout since most email clients strip <style> blocks and ignore modern CSS.
