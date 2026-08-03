@@ -15,8 +15,6 @@ export async function sendMagicLinkEmail(email: string, url: string) {
     html: `<p>Klik op de onderstaande link om in te loggen:</p><p><a href="${url}">${url}</a></p><p>Deze link verloopt na 1 uur.</p> <br /> <p>Als die link niet werkt, kopieer hem dan hier: ${url}</p>`,
   });
 
-  console.log("email from: " + process.env.EMAIL_FROM)
-
   if (error) {
     throw new Error(`Failed to send magic link email: ${error.message}`);
   }
