@@ -18,7 +18,7 @@ export default async function BeheerPage() {
   const lessons = await getAllTeksten();
 
   return (
-    <section className="mx-auto max-w-5xl px-6 py-12">
+    <section className="mx-auto px-6 py-12">
       <div className="mb-8 flex items-center justify-between">
         <h1 className="text-2xl font-semibold tracking-tight">Beheer</h1>
         <Button render={<Link href="/beheer/nieuw" />}>
