@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { BookOpen, Download, FileText, NotebookText } from "lucide-react";
+import { BookOpen, Download, ExternalLink, FileText, NotebookText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { MarkdownContent } from "@/components/markdown-content";
@@ -33,7 +33,6 @@ export function LessonViewer({
   lessons: { id: number; title: string; content: string }[];
 }) {
   const docs: Doc[] = [
-    { key: "tekst", label: "Tekst", icon: BookOpen, content: textContent },
     { key: "tekstanalyse", label: "Tekstanalyse", icon: FileText, content: textAnalysisContent },
     ...lessons.map((lesson) => ({
       key: `les-${lesson.id}`,
@@ -62,6 +61,18 @@ export function LessonViewer({
           <p className="text-sm text-muted-foreground">{group}</p>
         </div>
         <nav className="flex flex-col gap-1">
+          {textContent ? (
+            <a
+              href={textContent}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-primary underline underline-offset-2 transition-colors hover:bg-muted hover:no-underline"
+            >
+              <BookOpen className="size-4" />
+              Tekst
+              <ExternalLink className="size-3.5" />
+            </a>
+          ) : null}
           {docs.map((doc) => (
             <button
               key={doc.key}
