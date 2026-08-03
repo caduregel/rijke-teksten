@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
+import { PdfImportButton } from "@/components/admin/pdf-import-button";
 import {
   createTekst,
   updateTekst,
@@ -188,7 +189,9 @@ export function LessonForm({
       </div>
 
       <div className="flex flex-col gap-1.5">
-        <Label htmlFor="textContent">Tekst</Label>
+        <div className="flex items-center justify-between">
+          <Label htmlFor="textContent">Tekst</Label>
+        </div>
         <Textarea
           id="textContent"
           rows={6}
@@ -197,7 +200,12 @@ export function LessonForm({
         />
       </div>
       <div className="flex flex-col gap-1.5">
-        <Label htmlFor="textAnalysisContent">Tekstanalyse</Label>
+        <div className="flex items-center justify-between">
+          <Label htmlFor="textAnalysisContent">Tekstanalyse</Label>
+          <PdfImportButton
+            onImport={(markdown) => update("textAnalysisContent", markdown)}
+          />
+        </div>
         <Textarea
           id="textAnalysisContent"
           rows={6}
@@ -239,6 +247,11 @@ export function LessonForm({
                   <Trash2 data-icon="inline-start" />
                 </Button>
               )}
+            </div>
+            <div className="flex justify-end">
+              <PdfImportButton
+                onImport={(markdown) => updateLessonDraft(index, "content", markdown)}
+              />
             </div>
             <Textarea
               rows={5}
