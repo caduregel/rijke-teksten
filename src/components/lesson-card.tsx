@@ -91,7 +91,7 @@ export function LessonCard({ lesson, locked }: { lesson: LessonCardData; locked:
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>
-          <Button render={<Link href="/inloggen" />}>Inloggen/Registeren</Button>
+          <Button render={<Link href="/inloggen" />}>Registreer of Login</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

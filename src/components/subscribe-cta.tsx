@@ -11,15 +11,14 @@ export function SubscribeCta() {
             <Lock className="size-5" />
           </span>
           <div>
-            <h2 className="font-semibold">Wil je toegang tot alle teksten?</h2>
+            <h2 className="font-semibold">Wil je toegang tot alle lessen?</h2>
             <p className="text-sm text-muted-foreground">
-              Abonneer je en krijg direct toegang tot alle rijke teksten, elke week nieuwe
-              lessen en meer.
+              Voor nu heb je alleen een account nodig om alle lessen te kunnen bekijken
             </p>
           </div>
         </div>
-        <Button render={<Link href="/abonnement" />} className="shrink-0">
-          Bekijk abonnementen
+        <Button render={<Link href="/inloggen" />} className="shrink-0">
+          Maak een account aan!
         </Button>
       </div>
     </section>
