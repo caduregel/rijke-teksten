@@ -1,4 +1,4 @@
-import { pgTable, text, timestamp, boolean } from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, boolean, integer, bigint } from "drizzle-orm/pg-core";
 
 // Tables required by Better Auth's Drizzle adapter (core + magic-link plugin).
 // Keep field names/shape in sync with https://www.better-auth.com/docs/adapters/drizzle
@@ -55,4 +55,12 @@ export const verification = pgTable("verification", {
   expiresAt: timestamp("expires_at").notNull(),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Backs Better Auth's database-stored rate limiter (persists across serverless invocations).
+export const rateLimit = pgTable("rate_limit", {
+  id: text("id").primaryKey(),
+  key: text("key").notNull(),
+  count: integer("count"),
+  lastRequest: bigint("last_request", { mode: "number" }),
 });

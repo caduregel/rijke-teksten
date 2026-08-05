@@ -33,6 +33,22 @@ export const auth = betterAuth({
       },
     },
   },
+  // Store rate limit counters in the DB so limits survive across serverless
+  // invocations (in-memory storage would reset on every cold start on Vercel).
+  rateLimit: {
+    enabled: true,
+    storage: "database",
+    modelName: "rateLimit",
+    window: 60,
+    max: 100,
+    customRules: {
+      // Sending a magic-link email is the expensive/abusable action here.
+      "/sign-in/magic-link": {
+        window: 60 * 10,
+        max: 3,
+      },
+    },
+  },
   secret: process.env.BETTER_AUTH_SECRET,
   baseURL: process.env.BETTER_AUTH_URL,
 });
