@@ -3,6 +3,7 @@ export function canAccessLesson(
   lesson: { isFree: boolean },
   user: { role?: string } | null | undefined
 ) {
-  if (lesson.isFree) return true;
-  return user?.role === "subscriber" || user?.role === "admin";
+  if (lesson.isFree) return "true";
+  if(user) return true
+  // return user?.role === "subscriber" || user?.role === "admin";
 }

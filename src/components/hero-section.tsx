@@ -4,7 +4,7 @@ export function HeroSection() {
   return (
     <section className="mx-auto flex max-w-2xl flex-col items-center gap-6 px-6 py-20 text-center">
       <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">
-        Rijke teksten.
+        Lees Routine
         <br />
         <span className="text-primary">Klaar voor je les.</span>
       </h1>

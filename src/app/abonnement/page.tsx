@@ -13,7 +13,7 @@ import {
 const features = [
   {
     icon: BookOpen,
-    title: "Alle rijke teksten",
+    title: "Alle Lees Routine Teksten",
     description: "Onbeperkt toegang tot alle teksten, analyses en lessen.",
   },
   {
@@ -35,29 +35,25 @@ const features = [
 
 const plans = [
   {
-    name: "Maandelijks",
-    tagline: "Maandelijks opzegbaar",
-    price: "€ 9,95",
-    period: "per maand",
+    name: "Individueel",
+    tagline: "Voor persoonlijk gebruik door één leerkracht",
     highlighted: false,
     benefits: [
       "Onbeperkt toegang tot alle teksten en lessen",
       "Nieuwe lessen elke maand",
       "Download als PDF",
-      "Opzegbaar wanneer je wilt",
+      "Voor gebruik door één persoon",
     ],
   },
   {
-    name: "Jaarlijks",
-    tagline: "Bespaar 2 maanden",
-    price: "€ 99,-",
-    period: "per jaar",
+    name: "School",
+    tagline: "Voor het hele team, schoolbreed toegankelijk",
     highlighted: true,
     benefits: [
       "Onbeperkt toegang tot alle teksten en lessen",
       "Nieuwe lessen elke maand",
       "Download als PDF",
-      "2 maanden gratis",
+      "Toegang voor het hele schoolteam",
     ],
   },
 ];
@@ -85,12 +81,17 @@ export default function AbonnementPage() {
   return (
     <>
       <section className="mx-auto max-w-3xl px-6 pt-16 pb-8 text-center">
+        <Badge className="mb-4">Bèta</Badge>
         <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
           Krijg toegang tot alle rijke teksten en lessen
         </h1>
         <p className="mt-4 text-muted-foreground">
           Met een abonnement krijg je onbeperkt toegang tot alle complete lessenseries volgens
           de 3V-leesroutine.
+        </p>
+        <p className="mt-2 text-sm text-muted-foreground">
+          Rijke Teksten is nog in bèta. Probeer daarom nu 5 lessen gratis uit, zonder
+          abonnement.
         </p>
       </section>
 
@@ -111,9 +112,13 @@ export default function AbonnementPage() {
       </section>
 
       <section className="mx-auto max-w-3xl px-6 py-8">
-        <h2 className="mb-6 text-center text-xl font-semibold tracking-tight">
-          Kies het abonnement dat bij jou past
+        <h2 className="mb-2 text-center text-xl font-semibold tracking-tight">
+          Binnenkort: abonnementen
         </h2>
+        <p className="mb-6 text-center text-sm text-muted-foreground">
+          Lees Routine is nu nog in bèta. Er is nog geen prijs bekend en aanmelden voor een
+          abonnement kan nog niet — voorlopig kun je 5 lessen gratis bekijken.
+        </p>
         <div className="grid gap-4 sm:grid-cols-2">
           {plans.map((plan) => (
             <Card
@@ -121,14 +126,13 @@ export default function AbonnementPage() {
               className={plan.highlighted ? "ring-2 ring-primary" : undefined}
             >
               <CardHeader>
-                {plan.highlighted && (
-                  <Badge className="mb-1 w-fit">Meest gekozen</Badge>
-                )}
+                <Badge className="mb-1 w-fit" variant={plan.highlighted ? undefined : "secondary"}>
+                  Binnenkort beschikbaar
+                </Badge>
                 <CardTitle>{plan.name}</CardTitle>
                 <CardDescription>{plan.tagline}</CardDescription>
                 <p className="pt-2">
-                  <span className="text-3xl font-semibold">{plan.price}</span>{" "}
-                  <span className="text-sm text-muted-foreground">{plan.period}</span>
+                  <span className="text-3xl font-semibold">Nog geen prijs</span>
                 </p>
               </CardHeader>
               <CardContent className="flex flex-col gap-4">
@@ -140,9 +144,9 @@ export default function AbonnementPage() {
                     </li>
                   ))}
                 </ul>
-                {/* TODO: koppel aan een betaalprovider zoals Mollie of Stripe. */}
+                {/* TODO: koppel aan een betaalprovider zoals Mollie of Stripe zodra de bèta afloopt. */}
                 <Button variant={plan.highlighted ? "default" : "outline"} disabled>
-                  Kies {plan.name.toLowerCase()}
+                  Nog niet beschikbaar
                 </Button>
               </CardContent>
             </Card>
@@ -150,7 +154,7 @@ export default function AbonnementPage() {
         </div>
         <p className="mt-4 flex items-center justify-center gap-1.5 text-center text-xs text-muted-foreground">
           <ShieldCheck className="size-3.5" />
-          Veilig betalen. Opzeggen kan altijd. Geen kleine lettertjes.
+          We laten je weten zodra abonnementen beschikbaar zijn.
         </p>
       </section>
 
@@ -169,9 +173,10 @@ export default function AbonnementPage() {
       <section className="mx-auto max-w-3xl px-6 pt-4 pb-16">
         <div className="flex flex-col items-center gap-4 rounded-3xl bg-primary/10 p-8 text-center sm:flex-row sm:justify-between sm:text-left">
           <div>
-            <h2 className="font-semibold">Eerst uitproberen?</h2>
+            <h2 className="font-semibold">Nu in bèta: 5 lessen gratis</h2>
             <p className="text-sm text-muted-foreground">
-              Je kunt 5 lessen gratis bekijken om kennis te maken met de methode.
+              Zolang we in bèta zijn kun je 5 lessen gratis bekijken om kennis te maken met de
+              methode. Abonnementen volgen later.
             </p>
           </div>
           <Button render={<Link href="/lessen" />} className="shrink-0">

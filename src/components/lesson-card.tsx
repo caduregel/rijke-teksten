@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { BookOpen, Lock } from "lucide-react";
+import { BookOpen, Check, Lock } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import {
@@ -34,7 +34,7 @@ export function LessonCard({ lesson, locked }: { lesson: LessonCardData; locked:
             src={lesson.imageUrl}
             alt={lesson.title}
             fill
-            className="object-cover"
+            className="object-contain"
             sizes="(min-width: 768px) 25vw, 50vw"
           />
         ) : (
@@ -55,15 +55,16 @@ export function LessonCard({ lesson, locked }: { lesson: LessonCardData; locked:
         <span className="text-xs text-muted-foreground">{lesson.group}</span>
         <h3 className="text-base font-medium leading-snug">{lesson.title}</h3>
       </CardContent>
-      <CardFooter className="pt-0">
-        {lesson.isFree ? (
+      <CardFooter className="pb-3 pt-2">
+        {!locked ? (
           <Badge className="bg-emerald-500/10 text-emerald-700" variant="secondary">
-            Gratis
+            <Check data-icon="inline-start" />
+            Toegankelijk
           </Badge>
         ) : (
           <Badge variant="outline">
             <Lock data-icon="inline-start" />
-            Alleen voor abonnees
+            Alleen toegankelijk met account
           </Badge>
         )}
       </CardFooter>
@@ -83,14 +84,14 @@ export function LessonCard({ lesson, locked }: { lesson: LessonCardData; locked:
       <DialogTrigger className="block w-full text-left">{body}</DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Abonnement nodig</DialogTitle>
+          <DialogTitle>Account nodig</DialogTitle>
           <DialogDescription>
-            &ldquo;{lesson.title}&rdquo; is onderdeel van het betaalde aanbod. Sluit een
-            abonnement af om deze en alle andere lessen te ontgrendelen.
+            <p className="font-">&ldquo;{lesson.title}&rdquo;</p> is alleen toegankelijk met een account. Log in of maak
+            een account aan om deze en alle andere lessen te ontgrendelen.
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>
-          <Button render={<Link href="/abonnement" />}>Bekijk abonnementen</Button>
+          <Button render={<Link href="/inloggen" />}>Inloggen</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
